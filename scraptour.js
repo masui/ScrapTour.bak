@@ -40,7 +40,7 @@ $(function(){
     }
     else {
 	// geoAPIで現在地を取得
-	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+	navigator.geolocation.getCurrentPosition(googleMapsSuccess, googleMapsError);
     }
 
     /*
@@ -65,6 +65,36 @@ $(function(){
 	})
 */
 })
+
+function googleMapsSuccess(position) {
+    mapsurl = "https://maps.google.com/maps?q=" +
+        position.coords.latitude + "," +
+        position.coords.longitude;
+    curpos.latitude = position.coords.latitude
+    curpos.longitude = position.coords.longitude
+    curpos.zoom = 16
+    initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
+    //showlists()
+}
+
+function googleMapsError(error) {
+    var err_msg = "";
+    switch(error.code)
+    {
+        case 1:
+        err_msg = "位置情報の利用が許可されていません";
+        break;
+        case 2:
+        err_msg = "デバイスの位置が判定できません";
+        break;
+        case 3:
+        err_msg = "タイムアウトしました";
+        break;
+    }
+    alert(err_msg)
+    //document.getElementById("show_result").innerHTML = err_msg;
+}
+
 
 function distance(lat1, lng1, lat2, lng2) {
     const R = Math.PI / 180;
@@ -156,30 +186,3 @@ function showlists(){
     }
 }
 
-function successCallback(position) {
-    mapsurl = "https://maps.google.com/maps?q=" +
-        position.coords.latitude + "," +
-        position.coords.longitude;
-    curpos.latitude = position.coords.latitude
-    curpos.longitude = position.coords.longitude
-    curpos.zoom = 16
-    initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
-    //showlists()
-}
-function errorCallback(error) {
-    var err_msg = "";
-    switch(error.code)
-    {
-        case 1:
-        err_msg = "位置情報の利用が許可されていません";
-        break;
-        case 2:
-        err_msg = "デバイスの位置が判定できません";
-        break;
-        case 3:
-        err_msg = "タイムアウトしました";
-        break;
-    }
-    alert(err_msg)
-    //document.getElementById("show_result").innerHTML = err_msg;
-}
