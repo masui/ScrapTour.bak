@@ -30,7 +30,7 @@ $(function(){
 	}
     }
     if(curpos.latitude){
-	initGoogleMaps(curpos.latitude,curpos.longitude)
+	initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
 	//showlists()
     }
     else {
@@ -77,10 +77,10 @@ function locSearchAndDisplay(){
     //showlists()
 }
 
-function initGoogleMaps(lat,lng){
+function initGoogleMaps(lat,lng,zoom){
     var latlng = new google.maps.LatLng(lat,lng)
     var myOptions = {
-      zoom: 14,
+      zoom: zoom,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -156,7 +156,7 @@ function successCallback(position) {
         position.coords.longitude;
     curpos.latitude = position.coords.latitude
     curpos.longitude = position.coords.longitude
-    initGoogleMaps(curpos.latitude,curpos.longitude)
+    initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
     showlists()
 }
 function errorCallback(error) {
