@@ -163,7 +163,7 @@ function successCallback(position) {
     curpos.latitude = position.coords.latitude
     curpos.longitude = position.coords.longitude
     initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
-    showlists()
+    //showlists()
 }
 function errorCallback(error) {
     var err_msg = "";
