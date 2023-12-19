@@ -28,6 +28,7 @@ $(function(){
 	    curpos.latitude = Number(match[1])
 	    curpos.longitude = Number(match[2])
 	    curpos.zoom = Number(match[3])
+	    alert(curpos)
 	}
     }
     if(curpos.latitude){
@@ -35,7 +36,8 @@ $(function(){
 	//showlists()
     }
     else {
-	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+	alert('else')
+	navigator.geomlocation.getCurrentPosition(successCallback, errorCallback);
     }
 
     /*
