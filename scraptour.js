@@ -9,6 +9,8 @@ var locations = [] // POIリスト
     
 var map // GoogleMapsオブジェクト
 
+var project = 'masuimap'
+
 var selectedimage = 'https://i.gyazo.com/a9dd5417ae63c06ccddc2040adbd04af.png' // 空白画像
 
 $(function(){
@@ -17,8 +19,13 @@ $(function(){
     let args = {}
     document.location.search.substring(1).split('&').forEach((s) => {
         if(s != ''){
-            let [name, value] = s.split('=')
-            args[name] = decodeURIComponent(value)
+	    if(s.match(/=/)){
+		let [name, value] = s.split('=')
+		args[name] = decodeURIComponent(value)
+	    }
+	    else {
+		project = s
+	    }
         }
     })
     if(args['loc']){
