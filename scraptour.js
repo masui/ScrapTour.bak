@@ -9,11 +9,12 @@ var locations = [] // POIリスト
     
 var map // GoogleMapsオブジェクト
 
-var project = 'masuimap'
 
 var selectedimage = 'https://i.gyazo.com/a9dd5417ae63c06ccddc2040adbd04af.png' // 空白画像
 
 $(function(){
+    var project = 'masuimap'
+    
     // URL引数の解析
     // ?loc=abc みたいなものを解析
     let args = {}
@@ -28,8 +29,9 @@ $(function(){
 	    }
         }
     })
-    if(args['loc']){
-	var match = args['loc'].match(/[NS]([\d\.]*),[EW]([\d\.]*),Z(.*)/)
+    if(args['loc']){ // 引数で位置を指定された場合
+	// ?loc=N35.9912193E138.1319693Z16
+	var match = args['loc'].match(/[NS]([\d\.]*),?[EW]([\d\.]*),?Z(.*)/)
 	if(match){
 	    curpos.latitude = Number(match[1])
 	    curpos.longitude = Number(match[2])
@@ -41,29 +43,12 @@ $(function(){
     else {
 	// geoAPIで現在地を取得
 	navigator.geolocation.getCurrentPosition(googleMapsSuccess, googleMapsError);
+	// showlist() はコールバックの中で呼ばれる
+	// await は使えないのだろうか?
     }
 
-    /*
-    // [/Gyamap] からデータ取得
-    let name = '増井俊之'
-    if(args['name']){
-	name = args['name']
-    }
-    else { // Gyamap.com/逗子八景 みたいなURL
-	let match = location.href.match(/\/([^\/]+)$/)
-	if(match){
-	    name = match[1]
-	}
-    }
-
-    fetch(`/info/${name}`)
-	.then((response) => response.text())
-	.then((data) => {
-	    locations = JSON.parse(data)
-	    console.log(locations)
-	    locSearchAndDisplay()
-	})
-*/
+    // sbProjectプロジェクトからデータ取得
+    console.log(JSON.stringify(getlist(project)))
 })
 
 function googleMapsSuccess(position) {
@@ -97,12 +82,12 @@ function googleMapsError(error) {
 
 
 function distance(lat1, lng1, lat2, lng2) {
-    const R = Math.PI / 180;
-    lat1 *= R;
-    lng1 *= R;
-    lat2 *= R;
-    lng2 *= R;
-    return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+    const R = Math.PI / 180
+    lat1 *= R
+    lng1 *= R
+    lat2 *= R
+    lng2 *= R
+    return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2))
 }
 
 function locSearchAndDisplay(){
@@ -186,3 +171,51 @@ function showlists(){
     }
 }
 
+async function getlist(project){
+    var datalist = []
+    
+    url = `https://scrapbox.io/api/pages/${project}`
+    console.log(`url = ${url}`)
+    var response = await fetch(url)
+    var json = await response.json()
+    await Promise.all(json.pages.map(page => fetch(`https://scrapbox.io/api/pages/${project}/${page.title}/text`)
+        .then(result => result.text()))
+    ).then(results => results.forEach((text) => {
+        let desc = ""
+        let a = text.split(/\n/)
+        let title = a[0]
+        if(title[0] != '_'){
+            let entry = {}
+            for (let i = 1; i < a.length; i++) {
+                let line = a[i]
+                let match = line.match(/(https?:\/\/gyazo\.com\/[0-9a-f]{32})/) // Gyazo画像
+                if (match && !entry.photo) {
+                    entry.photo = match[1]
+                }
+                else {
+                    match = line.match(/\[N([\d\.]+),E([\d\.]+),Z([\d\.]+)(\s+\S+)?\]/) // 地図が登録されている場合
+                    if (match && !entry.latitude) {
+                        entry.title = title
+                        entry.latitude = Number(match[1]) // 西経の処理が必要!!
+                        entry.longitude = Number(match[2])
+                        entry.zoom = Number(match[3])
+                    }
+                    else {
+                        if (!line.match(/^\s*$/) && desc == "") {
+                            if (!line.match(/\[http/)) {
+                                desc = line.replace(/\[/g, '').replace(/\]/g, '')
+                            }
+                        }
+                    }
+                }
+            }
+            entry.desc = desc
+            if (entry.latitude) {
+                datalist.push(entry)
+                // console.log(`datalist.length = ${datalist.length}`)
+            }
+        }
+    }))
+    console.log('end')
+    return datalist
+}
