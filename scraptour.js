@@ -22,13 +22,11 @@ $(function(){
         }
     })
     if(args['loc']){
-	alert(args['loc'])
 	var match = args['loc'].match(/[NS]([\d\.]*),[EW]([\d\.]*),Z(.*)/)
 	if(match){
 	    curpos.latitude = Number(match[1])
 	    curpos.longitude = Number(match[2])
 	    curpos.zoom = Number(match[3])
-	    alert(curpos)
 	}
     }
     if(curpos.latitude){
@@ -36,8 +34,7 @@ $(function(){
 	//showlists()
     }
     else {
-	alert('else')
-	navigator.geomlocation.getCurrentPosition(successCallback, errorCallback);
+	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     }
 
     /*
