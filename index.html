@@ -2,7 +2,11 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>ScrapTour</title>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyBWKRUvZyPd4hVwby3YVN9g2177B9peTEA&sensor=false"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="scraptour.js"></script>
+    <!--
     <script type="text/javascript">
       $(function() {
 	  var s = window.location.search.substring(1)
@@ -13,19 +17,31 @@
 	    }
       });
     </script>
+-->
     <link rel="stylesheet" href="test.css" type="text/css">
     <style type="text/css">
       body {
+	  background-color: #fff;
 	  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	  margin: 5px;
+	  padding: 5px;
       }
       a:link { color: #0000f0 ; }
       a:visited { color: #0000f0 ; }
-      a {
-	  text-decoration: none;
-      }
+      a { text-decoration: none; }
     </style>
   </head>
   <body>
-    ScrapTour
+    <h2>ScrapTour: 現在地の近くの気になる場所や店を表示</h2>
+
+    <div style="display: flex; flex-flow: row wrap;">
+      <div id="map_canvas" style="width:400px;height:400px;padding=10px;"></div>
+      <img id="image" height=400 src="https://i.gyazo.com/a9dd5417ae63c06ccddc2040adbd04af.png" style="padding=10px;">
+    </div>
+
+    <ul id="list"></ul>
+
+    <h2><a href="https://scrapbox.io/Gyamap/概要" target='_blank'>概要</a></h2>
+    <h2><a href="https://scrapbox.io/Gyamap/Issues" target='_blank'>Issues</a></h2>
   </body>
 </html>
