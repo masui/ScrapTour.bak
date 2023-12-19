@@ -4,7 +4,6 @@
 //
 
 var curpos = {}
-var curzoom = 10
 
 var locations = [] // POIリスト
     
@@ -14,6 +13,7 @@ var selectedimage = 'https://i.gyazo.com/a9dd5417ae63c06ccddc2040adbd04af.png' /
 
 $(function(){
     // URL引数の解析
+    // ?loc=abc みたいなものを解析
     let args = {}
     document.location.search.substring(1).split('&').forEach((s) => {
         if(s != ''){
@@ -27,13 +27,12 @@ $(function(){
 	    curpos.latitude = Number(match[1])
 	    curpos.longitude = Number(match[2])
 	    curpos.zoom = Number(match[3])
+	    initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
+	    //showlists()
 	}
     }
-    if(curpos.latitude){
-	initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
-	//showlists()
-    }
     else {
+	// geoAPIで現在地を取得
 	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     }
 
