@@ -162,6 +162,7 @@ function successCallback(position) {
         position.coords.longitude;
     curpos.latitude = position.coords.latitude
     curpos.longitude = position.coords.longitude
+    curpos.zoom = 16
     initGoogleMaps(curpos.latitude,curpos.longitude,curpos.zoom)
     //showlists()
 }
